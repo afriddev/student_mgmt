@@ -1,140 +1,42 @@
+import { useMutation } from "react-query";
 import { useAppContext } from "./AppContext";
-import { studentType } from "./homeDataTypes";
-
-export let studentsData: studentType[] = [
-  {
-    "firstName": "Shaik",
-    "lastName": "Afrid",
-    "emailId": "369afrid@gmail.com",
-    "mobileNumber": 9390558027
-  },
-  {
-    "firstName": "John",
-    "lastName": "Doe",
-    "emailId": "johndoe@example.com",
-    "mobileNumber": 9876543210
-  },
-  {
-    "firstName": "Jane",
-    "lastName": "Smith",
-    "emailId": "janesmith@example.com",
-    "mobileNumber": 8765432109
-  },
-  {
-    "firstName": "Michael",
-    "lastName": "Johnson",
-    "emailId": "michaeljohnson@example.com",
-    "mobileNumber": 7654321098
-  },
-  {
-    "firstName": "Emily",
-    "lastName": "Davis",
-    "emailId": "emilydavis@example.com",
-    "mobileNumber": 6543210987
-  },
-  {
-    "firstName": "Robert",
-    "lastName": "Miller",
-    "emailId": "robertmiller@example.com",
-    "mobileNumber": 5432109876
-  },
-  {
-    "firstName": "Jessica",
-    "lastName": "Wilson",
-    "emailId": "jessicawilson@example.com",
-    "mobileNumber": 4321098765
-  },
-  {
-    "firstName": "David",
-    "lastName": "Moore",
-    "emailId": "davidmoore@example.com",
-    "mobileNumber": 3210987654
-  },
-  {
-    "firstName": "Sarah",
-    "lastName": "Taylor",
-    "emailId": "sarahtaylor@example.com",
-    "mobileNumber": 2109876543
-  },
-  {
-    "firstName": "James",
-    "lastName": "Anderson",
-    "emailId": "jamesanderson@example.com",
-    "mobileNumber": 1098765432
-  }
-]
-
-const URL = "http://localhost:3000/"
-
-function getData(url:string){
-
-  const serverResponse = fetch(URL,{
-    method:"GET",
-    mode:"no-cors"
-  }).then((res)=>{
-    console.log(res)
-  })
-
-}
+import { createStudentType, studentType } from "./homeDataTypes";
+import { createStudentAPI, deleteStudentAPI, editStudentDetailsAPI, getStudentsAPI } from "./api";
 
 
-function useUpdateStudentsData() {
-  const { dispatch } = useAppContext();
-  function updateStudentsData(array: studentType[]) {
-    dispatch({
-      type: "setStudentsData",
-      payload: array,
-    });
-  }
-  return { updateStudentsData };
-}
-
-export function getStudentsData(): studentType[] {
-  getData("api/allStudents")
-  return studentsData;
-}
-export function setStudentsData(data:studentType[]){
-    console.log(data)
-    studentsData = data
+export function getStudentsData() {
+  return getStudentsAPI("api/allStudents")
 }
 
 export function useAddStudent() {
-  const { updateStudentsData } = useUpdateStudentsData();
-  function addStudent(student: studentType) {
-    studentsData.push(student);
-    updateStudentsData(studentsData);
-  }
-  return {
-    addStudent,
-  };
+  const { mutate: addStudent, data, isLoading, isSuccess } = useMutation({
+    mutationFn: (data: createStudentType) => createStudentAPI("api/createStudent", data)
+  })
+  return { addStudent, isLoading, isSuccess, data }
 }
 
+
+
 export function useEditStudentDetails() {
-  const { updateStudentsData } = useUpdateStudentsData();
-  function editStudentDetails(student: studentType) {
-    const temp = studentsData;
-    for (let index = 0; index < studentsData?.length; index++) {
-      if (student?.emailId === studentsData[index].emailId) {
-        temp[index] = student;
-      }
-    }
-    studentsData = temp;
-    updateStudentsData(studentsData);
-  }
-  return { editStudentDetails };
+  const { mutate: editStudentDetails, data, isLoading, isSuccess } = useMutation({
+    mutationFn: (data: studentType) => editStudentDetailsAPI("api/editStudent", data)
+  })
+  return { editStudentDetails, data, isLoading, isSuccess };
 }
+
+
 export function useDeleteStudent() {
-  const { updateStudentsData } = useUpdateStudentsData();
-  function deleteStudent(emailId: string) {
-    const temp = studentsData.filter((student) => student?.emailId !== emailId);
-    studentsData = temp;
-    updateStudentsData(studentsData);
-  }
-  return { deleteStudent };
+  const { mutate: deleteStudent, data, isLoading, isSuccess } = useMutation({
+    mutationFn: ({ emailId }: { emailId: string }) => deleteStudentAPI("api/deleteStudent", emailId)
+  })
+  return { deleteStudent, isLoading, data, isSuccess };
 }
+
+
+
 export function useSearchStudent() {
-//   const { studentsMainData: data } = useAppContext();
-  function searchStudent(value: string,data:studentType[]) {
+  const { studentsMainData: data, dispatch } = useAppContext();
+  function searchStudent(value: string) {
     if (value && value.toString()?.length > 0) {
       const temp = data?.filter((student) => {
         if (
@@ -148,8 +50,13 @@ export function useSearchStudent() {
         )
           return student;
       });
-      studentsData = temp;
-    } else studentsData = data;
+      dispatch({
+        type: "setSearchedData",
+        payload: temp
+      })
+
+
+    }
   }
 
   return { searchStudent };

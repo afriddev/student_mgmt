@@ -6,6 +6,7 @@ const initState: contextType = {
   selectedMethod: "",
   selectedStudent: undefined,
   studentsMainData: undefined,
+  searchedData: undefined,
 };
 
 const contextProvider = createContext(initState);
@@ -29,6 +30,19 @@ function reducer(state: contextType, action: dispatchDataType) {
         ...state,
         studentsMainData: action.payload,
       };
+      
+    case "setSearchedData":
+      return {
+        ...state,
+        searchedData: action.payload,
+      };
+      
+    case "clearSearchedData":
+      return {
+        ...state,
+        searchedData:undefined,
+      };
+
 
     default:
       throw new Error("Action unkonwn");
@@ -36,7 +50,7 @@ function reducer(state: contextType, action: dispatchDataType) {
 }
 
 export default function AppContext({ children }: { children: ReactNode }) {
-  const [{ selectedMethod, selectedStudent, studentsMainData }, dispatch] =
+  const [{ selectedMethod, selectedStudent, searchedData,studentsMainData }, dispatch] =
     useReducer(reducer, initState);
 
   return (
@@ -46,6 +60,7 @@ export default function AppContext({ children }: { children: ReactNode }) {
         selectedMethod,
         selectedStudent,
         studentsMainData,
+        searchedData
       }}
     >
       {children}

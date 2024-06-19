@@ -14,7 +14,7 @@ import {
   ACTIONS,
   ADD_STUDENT,
   EMAIL_ID,
-FIRST_NAME,
+  FIRST_NAME,
   LAST_NAME,
   MOBILE_NUMBER,
   NO_DATA,
@@ -23,8 +23,6 @@ import {
   useDeleteStudent,
   getStudentsData,
   useSearchStudent,
-  studentsData,
-  setStudentsData,
 } from "./dataAndHooks";
 import { studentType } from "./homeDataTypes";
 import {
@@ -37,20 +35,34 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAppContext } from "./AppContext";
+import Spinner from "./Spinner";
 
 function StudentsTable() {
-  const [searchValue, setSearchValue] = useState("");
-  const queryClient = useQueryClient();
-  const { dispatch, studentsMainData } = useAppContext();
-  const { deleteStudent } = useDeleteStudent();
-  const { searchStudent } = useSearchStudent();
-  const [start, setSatrt] = useState(0);
-  const rows = 5;
-
-  const { data } = useQuery({
+  const {
+    data: data,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: ["getStudents"],
     queryFn: () => getStudentsData(),
   });
+
+  const [searchValue, setSearchValue] = useState("");
+  const queryClient = useQueryClient();
+  const { dispatch, searchedData } = useAppContext();
+  const { deleteStudent, isLoading: deletingStudent } = useDeleteStudent();
+  const { searchStudent } = useSearchStudent();
+  const [start, setSatrt] = useState(0);
+  const [searchClicked, setSearchedClick] = useState(false);
+
+  const rows = 5;
+
+  useEffect(() => {
+    dispatch({
+      type: "setStudentsData",
+      payload: data,
+    });
+  }, [data]);
 
   function nextClick() {
     if (data) {
@@ -72,20 +84,33 @@ function StudentsTable() {
   }
   function handleDeleteClick(emailId: string) {
     if (confirm("Do you want delete?")) {
-      deleteStudent(emailId);
-      queryClient?.invalidateQueries({
-        queryKey: ["getStudents"],
-      });
+      deleteStudent(
+        { emailId },
+        {
+          onSuccess(data) {
+            if (data === "success")
+              queryClient?.invalidateQueries({
+                queryKey: ["getStudents"],
+              });
+          },
+        }
+      );
     }
   }
   function handleSearchClick() {
+    if (searchValue !== "") {
+      searchStudent(searchValue);
+      setSearchedClick(true);
+    } else {
+      handleClearClick();
+    }
+  }
+  function handleClearClick() {
+    setSearchValue("");
+    setSearchedClick(false);
     dispatch({
-      type: "setStudentsData",
-      payload: studentsData,
-    });
-    searchStudent(searchValue, studentsData);
-    queryClient?.invalidateQueries({
-      queryKey: ["getStudents"],
+      type: "clearSearchedData",
+      payload: "",
     });
   }
   function handleChange(e: any) {
@@ -100,17 +125,10 @@ function StudentsTable() {
       },
     });
   }
-  function handleClearClick() {
-    setSearchValue("");
-    setStudentsData(studentsMainData as never);
-    queryClient?.invalidateQueries({
-      queryKey: ["getStudents"],
-    });
-  }
 
   return (
-    <div className="max-w-[75vw]  flex flex-col gap-3">
-      <div className="flex items-center w-[70vw] justify-between">
+    <div className="max-w-[75vw] flex flex-col gap-3">
+      <div className="flex pt-4 px-4 items-center w-[70vw] justify-between">
         <div className="flex items-center gap-3">
           <div className="relative flex items-center">
             <Input
@@ -129,8 +147,8 @@ function StudentsTable() {
             </div>
           </div>
           <Search
-            onClick={handleSearchClick} 
-            className={` ${                       
+            onClick={handleSearchClick}
+            className={` ${
               data && data?.length < 1
                 ? "text-border/50 cursor-not-allowed"
                 : "w-10 h-10  cursor-pointer hover:bg-border/50 rounded-full p-2"
@@ -139,11 +157,11 @@ function StudentsTable() {
         </div>
         <Button onClick={addStudent}>{ADD_STUDENT}</Button>
       </div>
-      <div className="overflow-y-auto flex flex-col gap-2 overflow-x-hidden h-[85vh]">
+      <div className="px-4 overflow-y-auto flex flex-col gap-2 overflow-x-hidden h-[85vh]">
         <div className="w-full gap-3 justify-end flex items-center ">
-          <label className="text-xs font-semibold">{
-          `Page ${start/rows + 1} of ${Math.ceil((data as any)?.length / rows)}`
-          }</label>
+          <label className="text-xs font-semibold">{`Page ${
+            start / rows + 1
+          } of ${Math.ceil((data as any)?.length / rows)}`}</label>
           <ChevronLeft
             onClick={prevClick}
             className={`text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer ${
@@ -153,11 +171,11 @@ function StudentsTable() {
           <ChevronRight
             onClick={nextClick}
             className={`text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer ${
-              start + rows >= (data as any)?.length &&  "bg-slate-400"
+              start + rows >= (data as any)?.length && "bg-slate-400"
             } `}
           />
         </div>
-        {data && data?.length > 0 ? (
+        {(searchClicked ? searchedData : data)?.length > 0 ? (
           <Table className="border">
             <TableHeader>
               <TableRow>
@@ -179,7 +197,7 @@ function StudentsTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data
+              {(searchClicked ? searchedData : data)
                 ?.slice(start, rows + start)
                 ?.map((student: studentType, index: number) => {
                   return (
@@ -219,6 +237,7 @@ function StudentsTable() {
           <div>{NO_DATA}</div>
         )}
       </div>
+      {(isLoading || deletingStudent || isFetching) && <Spinner />}
     </div>
   );
 }

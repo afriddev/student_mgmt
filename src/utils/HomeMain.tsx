@@ -6,25 +6,27 @@ import { useAppContext } from "./AppContext";
 function HomeMain() {
   const { selectedMethod, selectedStudent } = useAppContext();
   return (
-    <div className="p-4 flex gap-x-6">
+    <div className=" flex gap-x-6">
       <div>
         <StudentsTable />
       </div>
-      {selectedMethod === "ADD" && (
-        <div>
-          <AddAndEditForm edit={false} title={ADD_STUDENT} />
-        </div>
-      )}
+      <div>
+        {selectedMethod === "ADD" && (
+          <div>
+            <AddAndEditForm edit={false} title={ADD_STUDENT} />
+          </div>
+        )}
 
-      {selectedMethod === "EDIT" && (
-        <div>
-          <AddAndEditForm
-            edit={true}
-            title={EDIT_DATA}
-            studentData={selectedStudent}
-          />
-        </div>
-      )}
+        {selectedMethod === "EDIT" && (
+          <div>
+            <AddAndEditForm
+              edit={true}
+              title={EDIT_DATA}
+              studentData={selectedStudent}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
