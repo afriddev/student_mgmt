@@ -28,7 +28,14 @@ import {
   setStudentsData,
 } from "./dataAndHooks";
 import { studentType } from "./homeDataTypes";
-import { Pencil, Search, Trash2, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Pencil,
+  Search,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { useAppContext } from "./AppContext";
 
@@ -38,11 +45,20 @@ function StudentsTable() {
   const { dispatch, studentsMainData } = useAppContext();
   const { deleteStudent } = useDeleteStudent();
   const { searchStudent } = useSearchStudent();
+  const [start,setSatrt] = useState(0)
+  const rows = 5
 
   const { data } = useQuery({
     queryKey: ["getStudents"],
     queryFn: () => getStudentsData(),
   });
+
+  function nextClick(){
+    setSatrt(start+rows)
+  }
+  function prevClick(){
+    setSatrt(start-rows)
+  } 
 
   function handleEditClick(student: studentType) {
     dispatch({
@@ -122,9 +138,13 @@ function StudentsTable() {
         </div>
         <Button onClick={addStudent}>{ADD_STUDENT}</Button>
       </div>
-      <div className="overflow-y-auto overflow-x-hidden max-h-[85vh]">
+      <div className="overflow-y-auto flex flex-col gap-2 overflow-x-hidden h-[85vh]">
+        <div className="w-full gap-3 justify-end flex ">
+          <ChevronLeft onClick={prevClick} className="text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer " />
+          <ChevronRight onClick={nextClick} className="text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer " />
+        </div>
         {data && data?.length > 0 ? (
-          <Table className="border ">
+          <Table className="border">
             <TableHeader>
               <TableRow>
                 <TableHead className="font-bold text-primary">
@@ -145,7 +165,7 @@ function StudentsTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.map((student: studentType, index: number) => {
+              {data?.slice(start,rows+start)?.map((student: studentType, index: number) => {
                 return (
                   <TableRow key={index}>
                     <TableCell>{student?.fisrtName}</TableCell>
