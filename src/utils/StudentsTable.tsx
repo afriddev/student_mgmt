@@ -36,7 +36,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "./AppContext";
 
 function StudentsTable() {
@@ -130,8 +130,8 @@ function StudentsTable() {
             </div>
           </div>
           <Search
-            onClick={handleSearchClick}
-            className={` ${
+            onClick={handleSearchClick} 
+            className={` ${                       
               data && data?.length < 1
                 ? "text-border/50 cursor-not-allowed"
                 : "w-10 h-10  cursor-pointer hover:bg-border/50 rounded-full p-2"
@@ -143,18 +143,18 @@ function StudentsTable() {
       <div className="overflow-y-auto flex flex-col gap-2 overflow-x-hidden h-[85vh]">
         <div className="w-full gap-3 justify-end flex items-center ">
           <label className="text-xs font-semibold">{
-          `Page ${start/rows + 1} of ${(data as any)?.length / rows} `
+          `Page ${start/rows + 1} of ${Math.ceil((data as any)?.length / rows)}`
           }</label>
           <ChevronLeft
             onClick={prevClick}
             className={`text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer ${
-              start === 0 && "bg-border"
+              start === 0 && "bg-slate-400"
             }`}
           />
           <ChevronRight
             onClick={nextClick}
             className={`text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer ${
-              start + rows >= (data as any)?.length && "bg-border"
+              start + rows >= (data as any)?.length &&  "bg-slate-400"
             } `}
           />
         </div>

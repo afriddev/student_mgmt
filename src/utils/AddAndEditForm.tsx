@@ -13,6 +13,7 @@ import {
   MOBILE_NUMBER,
   MODIFY,
   SUBMIT,
+  SUBMITING,
 } from "./constants";
 import { useAddStudent, useEditStudentDetails } from "./dataAndHooks";
 import { studentType } from "./homeDataTypes";
@@ -235,7 +236,7 @@ function AddAndEditForm({ edit, title, studentData }: AddAndEditFormIntreface) {
           {([canSubmit, isSubmitting]) => {
             return (
               <Button disabled={!canSubmit} type="submit">
-                {!isSubmitting ? (!edit ? SUBMIT : MODIFY) : "Submiting ..."}
+                {!isSubmitting ? (!edit ? SUBMIT : MODIFY) : SUBMITING}
               </Button>
             );
           }}
