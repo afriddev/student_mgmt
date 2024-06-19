@@ -2,7 +2,7 @@
 import React from "react";
 
 export type studentType = {
-  fisrtName: string;
+  firstName: string;
   lastName: string;
   mobileNumber: number;
   emailId: string;

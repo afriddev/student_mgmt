@@ -3,24 +3,67 @@ import { studentType } from "./homeDataTypes";
 
 export let studentsData: studentType[] = [
   {
-    fisrtName: "Shaik",
-    lastName: "Afrid",
-    emailId: "369afrid@gmail.com",
-    mobileNumber: 9390558027,
+    "firstName": "Shaik",
+    "lastName": "Afrid",
+    "emailId": "369afrid@gmail.com",
+    "mobileNumber": 9390558027
   },
   {
-    fisrtName: "Arun",
-    lastName: "Medi",
-    emailId: "123arun@gmail.com",
-    mobileNumber: 9390558027,
+    "firstName": "John",
+    "lastName": "Doe",
+    "emailId": "johndoe@example.com",
+    "mobileNumber": 9876543210
   },
   {
-    fisrtName: "Praveen",
-    lastName: "Tholem",
-    emailId: "praveentholem123@gmail.com",
-    mobileNumber: 9390558027,
+    "firstName": "Jane",
+    "lastName": "Smith",
+    "emailId": "janesmith@example.com",
+    "mobileNumber": 8765432109
   },
-];
+  {
+    "firstName": "Michael",
+    "lastName": "Johnson",
+    "emailId": "michaeljohnson@example.com",
+    "mobileNumber": 7654321098
+  },
+  {
+    "firstName": "Emily",
+    "lastName": "Davis",
+    "emailId": "emilydavis@example.com",
+    "mobileNumber": 6543210987
+  },
+  {
+    "firstName": "Robert",
+    "lastName": "Miller",
+    "emailId": "robertmiller@example.com",
+    "mobileNumber": 5432109876
+  },
+  {
+    "firstName": "Jessica",
+    "lastName": "Wilson",
+    "emailId": "jessicawilson@example.com",
+    "mobileNumber": 4321098765
+  },
+  {
+    "firstName": "David",
+    "lastName": "Moore",
+    "emailId": "davidmoore@example.com",
+    "mobileNumber": 3210987654
+  },
+  {
+    "firstName": "Sarah",
+    "lastName": "Taylor",
+    "emailId": "sarahtaylor@example.com",
+    "mobileNumber": 2109876543
+  },
+  {
+    "firstName": "James",
+    "lastName": "Anderson",
+    "emailId": "jamesanderson@example.com",
+    "mobileNumber": 1098765432
+  }
+]
+
 
 function useUpdateStudentsData() {
   const { dispatch } = useAppContext();
@@ -82,7 +125,7 @@ export function useSearchStudent() {
       const temp = data?.filter((student) => {
         if (
           student?.emailId.toLowerCase().includes(value.toLowerCase()) ||
-          student?.fisrtName.toLowerCase().includes(value.toLowerCase()) ||
+          student?.firstName.toLowerCase().includes(value.toLowerCase()) ||
           student?.lastName.toLowerCase().includes(value.toLowerCase()) ||
           student?.mobileNumber
             .toString()

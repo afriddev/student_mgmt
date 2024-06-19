@@ -6,7 +6,6 @@ interface ErrorLabelInterface {
 }
 
 function ErrorLabel({ label, style }: ErrorLabelInterface) {
-  
   return (
     <i className={cn("text-destructive text-xs pl-1", style)}>{label}</i>
   );

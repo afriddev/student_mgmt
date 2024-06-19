@@ -45,20 +45,22 @@ function StudentsTable() {
   const { dispatch, studentsMainData } = useAppContext();
   const { deleteStudent } = useDeleteStudent();
   const { searchStudent } = useSearchStudent();
-  const [start,setSatrt] = useState(0)
-  const rows = 5
+  const [start, setSatrt] = useState(0);
+  const rows = 5;
 
   const { data } = useQuery({
     queryKey: ["getStudents"],
     queryFn: () => getStudentsData(),
   });
 
-  function nextClick(){
-    setSatrt(start+rows)
+  function nextClick() {
+    if (data) {
+      if ((start + rows < data?.length) as never) setSatrt(start + rows);
+    }
   }
-  function prevClick(){
-    setSatrt(start-rows)
-  } 
+  function prevClick() {
+    if (start > 0) setSatrt(start - rows);
+  }
 
   function handleEditClick(student: studentType) {
     dispatch({
@@ -139,9 +141,22 @@ function StudentsTable() {
         <Button onClick={addStudent}>{ADD_STUDENT}</Button>
       </div>
       <div className="overflow-y-auto flex flex-col gap-2 overflow-x-hidden h-[85vh]">
-        <div className="w-full gap-3 justify-end flex ">
-          <ChevronLeft onClick={prevClick} className="text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer " />
-          <ChevronRight onClick={nextClick} className="text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer " />
+        <div className="w-full gap-3 justify-end flex items-center ">
+          <label className="text-xs font-semibold">{
+          `Page ${start/rows + 1} of ${(data as any)?.length / rows} `
+          }</label>
+          <ChevronLeft
+            onClick={prevClick}
+            className={`text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer ${
+              start === 0 && "bg-border"
+            }`}
+          />
+          <ChevronRight
+            onClick={nextClick}
+            className={`text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer ${
+              start + rows >= (data as any)?.length && "bg-border"
+            } `}
+          />
         </div>
         {data && data?.length > 0 ? (
           <Table className="border">
@@ -165,38 +180,40 @@ function StudentsTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.slice(start,rows+start)?.map((student: studentType, index: number) => {
-                return (
-                  <TableRow key={index}>
-                    <TableCell>{student?.fisrtName}</TableCell>
-                    <TableCell>{student?.lastName}</TableCell>
-                    <TableCell>{student?.mobileNumber}</TableCell>
-                    <TableCell>{student?.emailId}</TableCell>
-                    <TableCell>
-                      {
-                        <div className="flex items-center gap-5">
-                          <div title="Delete">
-                            <Trash2
-                              onClick={() => {
-                                handleDeleteClick(student?.emailId);
-                              }}
-                              className="text-destructive w-10 h-10 cursor-pointer hover:bg-border/50 rounded-full p-2"
-                            />
+              {data
+                ?.slice(start, rows + start)
+                ?.map((student: studentType, index: number) => {
+                  return (
+                    <TableRow key={index}>
+                      <TableCell>{student?.firstName}</TableCell>
+                      <TableCell>{student?.lastName}</TableCell>
+                      <TableCell>{student?.mobileNumber}</TableCell>
+                      <TableCell>{student?.emailId}</TableCell>
+                      <TableCell>
+                        {
+                          <div className="flex items-center gap-5">
+                            <div title="Delete">
+                              <Trash2
+                                onClick={() => {
+                                  handleDeleteClick(student?.emailId);
+                                }}
+                                className="text-destructive w-10 h-10 cursor-pointer hover:bg-border/50 rounded-full p-2"
+                              />
+                            </div>
+                            <div title="Edit">
+                              <Pencil
+                                onClick={() => {
+                                  handleEditClick(student);
+                                }}
+                                className="w-5 h-5 cursor-pointer hover:scale-105"
+                              />
+                            </div>
                           </div>
-                          <div title="Edit">
-                            <Pencil
-                              onClick={() => {
-                                handleEditClick(student);
-                              }}
-                              className="w-5 h-5 cursor-pointer hover:scale-105"
-                            />
-                          </div>
-                        </div>
-                      }
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                        }
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         ) : (

@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm } from "@tanstack/react-form";
+import { X } from "lucide-react";
+import { useQueryClient } from "react-query";
+import { Button } from "../../@/components/ui/button";
+import { Input } from "../../@/components/ui/input";
+import { useAppContext } from "./AppContext";
+import ErrorLabel from "./ErrorLabel";
 import {
   EMAIL_ID,
   FIRST_NAME,
@@ -8,14 +14,8 @@ import {
   MODIFY,
   SUBMIT,
 } from "./constants";
-import { Input } from "../../@/components/ui/input";
-import { Button } from "../../@/components/ui/button";
-import { studentType } from "./homeDataTypes";
-import { useAppContext } from "./AppContext";
 import { useAddStudent, useEditStudentDetails } from "./dataAndHooks";
-import { useQueryClient } from "react-query";
-import { X } from "lucide-react";
-import ErrorLabel from "./ErrorLabel";
+import { studentType } from "./homeDataTypes";
 
 interface AddAndEditFormIntreface {
   title: string;
@@ -29,7 +29,7 @@ function AddAndEditForm({ edit, title, studentData }: AddAndEditFormIntreface) {
   const { editStudentDetails } = useEditStudentDetails();
   const form = useForm({
     defaultValues: {
-      FN: studentData?.fisrtName,
+      FN: studentData?.firstName,
       LN: studentData?.lastName,
       mobileNumber: studentData?.mobileNumber,
       emailId: studentData?.emailId,
@@ -44,7 +44,7 @@ function AddAndEditForm({ edit, title, studentData }: AddAndEditFormIntreface) {
         editStudentDetails({
           emailId: vals?.value?.emailId,
           mobileNumber: vals?.value?.mobileNumber,
-          fisrtName: vals?.value?.FN,
+          firstName: vals?.value?.FN,
           lastName: vals?.value?.LN,
         });
         dispatch({
@@ -57,7 +57,7 @@ function AddAndEditForm({ edit, title, studentData }: AddAndEditFormIntreface) {
         addStudent({
           emailId: vals?.value?.emailId,
           mobileNumber: vals?.value?.mobileNumber,
-          fisrtName: vals?.value?.FN,
+          firstName: vals?.value?.FN,
           lastName: vals?.value?.LN,
         });
         dispatch({
@@ -92,8 +92,10 @@ function AddAndEditForm({ edit, title, studentData }: AddAndEditFormIntreface) {
     });
   }
   function runOnMount({ value }: any) {
-    form.validateAllFields("change");
-    return value;
+    if (!edit) {
+      form.validateAllFields("change");
+      return value;
+    }
   }
   return (
     <div className="w-[25vw] flex flex-col gap-2 border rounded-lg ">
@@ -139,7 +141,9 @@ function AddAndEditForm({ edit, title, studentData }: AddAndEditFormIntreface) {
                         field.handleChange(e?.target?.value);
                       }}
                     />
-                    <ErrorLabel label={field?.state?.meta?.touchedErrors} />
+                    {field?.state?.meta?.touchedErrors?.length>0 && (
+                      <ErrorLabel label={field?.state?.meta?.touchedErrors} />
+                    )}
                   </>
                 );
               }}
@@ -160,7 +164,6 @@ function AddAndEditForm({ edit, title, studentData }: AddAndEditFormIntreface) {
                         field.handleChange(e?.target?.value);
                       }}
                     />
-                    <ErrorLabel label={field?.state?.meta?.touchedErrors} />
                   </>
                 );
               }}
@@ -187,7 +190,9 @@ function AddAndEditForm({ edit, title, studentData }: AddAndEditFormIntreface) {
                         field.handleChange(e?.target?.value);
                       }}
                     />
-                    <ErrorLabel label={field?.state?.meta?.touchedErrors} />
+                    {field?.state?.meta?.touchedErrors?.length>0 && (
+                      <ErrorLabel label={field?.state?.meta?.touchedErrors} />
+                    )}
                   </>
                 );
               }}
@@ -215,7 +220,9 @@ function AddAndEditForm({ edit, title, studentData }: AddAndEditFormIntreface) {
                         field.handleChange(e?.target?.value);
                       }}
                     />
-                    <ErrorLabel label={field?.state?.meta?.touchedErrors} />
+                    {field?.state?.meta?.touchedErrors?.length>0 && (
+                      <ErrorLabel label={field?.state?.meta?.touchedErrors} />
+                    )}
                   </>
                 );
               }}
