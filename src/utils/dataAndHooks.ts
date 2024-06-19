@@ -64,6 +64,19 @@ export let studentsData: studentType[] = [
   }
 ]
 
+const URL = "http://localhost:3000/"
+
+function getData(url:string){
+
+  const serverResponse = fetch(URL,{
+    method:"GET",
+    mode:"no-cors"
+  }).then((res)=>{
+    console.log(res)
+  })
+
+}
+
 
 function useUpdateStudentsData() {
   const { dispatch } = useAppContext();
@@ -77,6 +90,7 @@ function useUpdateStudentsData() {
 }
 
 export function getStudentsData(): studentType[] {
+  getData("api/allStudents")
   return studentsData;
 }
 export function setStudentsData(data:studentType[]){

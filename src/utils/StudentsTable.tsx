@@ -14,12 +14,11 @@ import {
   ACTIONS,
   ADD_STUDENT,
   EMAIL_ID,
-  FIRST_NAME,
+FIRST_NAME,
   LAST_NAME,
   MOBILE_NUMBER,
   NO_DATA,
 } from "./constants";
-
 import {
   useDeleteStudent,
   getStudentsData,
