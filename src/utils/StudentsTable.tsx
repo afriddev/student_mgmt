@@ -72,12 +72,11 @@ function StudentsTable() {
         data: student,
       },
     });
-    
+
     dispatch({
       type: "setSelectedStudentData",
-      payload:student,
+      payload: student,
     });
-
   }
   function handleDeleteClick(emailId: string) {
     if (confirm("Do you want delete?")) {
@@ -152,23 +151,25 @@ function StudentsTable() {
         <Button onClick={addStudent}>{ADD_STUDENT}</Button>
       </div>
       <div className="px-4 overflow-y-auto flex flex-col gap-2 overflow-x-hidden h-[85vh]">
-        <div className="w-full gap-3 justify-end flex items-center ">
-          <label className="text-xs font-semibold">{`Page ${
-            start / rows + 1
-          } of ${Math.ceil((data as any)?.length / rows)}`}</label>
-          <ChevronLeft
-            onClick={prevClick}
-            className={`text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer ${
-              start === 0 && "bg-slate-400"
-            }`}
-          />
-          <ChevronRight
-            onClick={nextClick}
-            className={`text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer ${
-              start + rows >= (data as any)?.length && "bg-slate-400"
-            } `}
-          />
-        </div>
+        {(searchClicked ? searchedData : data)?.length > 0 && (
+          <div className="w-full gap-3 justify-end flex items-center ">
+            <label className="text-xs font-semibold">{`Page ${
+              start / rows + 1
+            } of ${Math.ceil((data as any)?.length / rows)}`}</label>
+            <ChevronLeft
+              onClick={prevClick}
+              className={`text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer ${
+                start === 0 && "bg-slate-400"
+              }`}
+            />
+            <ChevronRight
+              onClick={nextClick}
+              className={`text-primary-foreground h-4 w-4 rounded-sm  bg-primary cursor-pointer ${
+                start + rows >= (data as any)?.length && "bg-slate-400"
+              } `}
+            />
+          </div>
+        )}
         {(searchClicked ? searchedData : data)?.length > 0 ? (
           <Table className="border">
             <TableHeader>
