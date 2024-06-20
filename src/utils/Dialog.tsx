@@ -2,17 +2,18 @@
 import { X } from "lucide-react";
 import { useAppContext } from "./AppContext";
 
-import Form from "./Form";
 import { studentType } from "./homeDataTypes";
 import AddFormTabs from "./AddFormTabs";
+import BasicForm from "./BasicForm";
+import AdvanceForm from "./AdvancedForm";
 
-interface AddAndEditIntreface {
+interface DialogIntreface {
   title: string;
   edit: boolean;
   studentData?: studentType;
 }
 
-function AddAndEdit({ edit, title, studentData }: AddAndEditIntreface) {
+function Dialog({ edit, title, studentData }: DialogIntreface) {
   const { dispatch, selectedMethod } = useAppContext();
   function closeDialog() {
     dispatch({
@@ -30,17 +31,21 @@ function AddAndEdit({ edit, title, studentData }: AddAndEditIntreface) {
             <X className="w-10 h-10 p-2 hover:bg-border/50 rounded-full cursor-pointer" />
           </div>
         </div>
-        <div className="px-2">
+        <div className="px-2 pb-3">
           {selectedMethod === "ADD" ? (
             <AddFormTabs>
-              <Form edit={edit} studentData={studentData} />
+              <BasicForm edit={edit} />
+              <AdvanceForm edit={edit} studentData={studentData} />
             </AddFormTabs>
           ) : (
-            <Form edit={edit} studentData={studentData} />
+            <div className="gap-2 flex flex-col ">
+              <BasicForm edit={true} />
+              <AdvanceForm edit={true} studentData={studentData} />
+            </div>
           )}
         </div>
       </div>
     </>
   );
 }
-export default AddAndEdit;
+export default Dialog;

@@ -1,4 +1,4 @@
-import AddAndEdit from "./AddAndEdit";
+import AddAndEdit from "./Dialog";
 import { useAppContext } from "./AppContext";
 import StudentsTable from "./StudentsTable";
 import { ADD_STUDENT, EDIT_DATA } from "./constants";
@@ -10,7 +10,7 @@ function HomeMain() {
       <div>
         <StudentsTable />
       </div>
-      <div>
+      <div >
         {selectedMethod === "ADD" && (
           <div>
             <AddAndEdit edit={false} title={ADD_STUDENT} />

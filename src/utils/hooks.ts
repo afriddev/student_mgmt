@@ -26,7 +26,6 @@ export function useGetStudentsData() {
   const { data, mutate: getStudentsData, isLoading, isSuccess } = useMutation({
     mutationFn: () => getStudentsAPI("api/allStudents"),
     onSuccess(data) {
-      console.log(data)
       dispatch({
         type: "setStudentsData",
         payload: data,
@@ -92,4 +91,24 @@ export function useSearchStudent() {
   }
 
   return { searchStudent };
+}
+
+
+export function useHandleChange() {
+  const { dispatch } = useAppContext()
+
+  function handleOnChange(filed: "FN" | "LN" | "emailId" | "MB", value: any) {
+    dispatch({
+      type: "setSelectedStudentData",
+      payload: {
+        firstName: filed === "FN" ? value : undefined,
+        lastName: filed === "LN" ? value : undefined,
+        emailId: filed === "emailId" ? value : undefined,
+        mobileNumber: filed === "MB" ? parseInt(value) : undefined,
+      },
+    });
+  }
+
+
+  return { handleOnChange }
 }

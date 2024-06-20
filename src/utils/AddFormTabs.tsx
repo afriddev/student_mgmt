@@ -35,6 +35,7 @@ function AddFormTabs({ children }: AddFormTabsInterface) {
     else return true;
   }
 
+
   return (
     <div className="px-2">
       <Tabs className="w-full" value={step === 1 ? "step1" : "step2"}>
@@ -52,10 +53,10 @@ function AddFormTabs({ children }: AddFormTabsInterface) {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="step1" className="w-full">
-          {children}
+          {(children as never)[0]}
         </TabsContent>
         <TabsContent value="step2" className="w-full">
-          {children}
+          {(children as never)[1]}
         </TabsContent>
       </Tabs>
     </div>

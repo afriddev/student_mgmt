@@ -72,6 +72,12 @@ function StudentsTable() {
         data: student,
       },
     });
+    
+    dispatch({
+      type: "setSelectedStudentData",
+      payload:student,
+    });
+
   }
   function handleDeleteClick(emailId: string) {
     if (confirm("Do you want delete?")) {
