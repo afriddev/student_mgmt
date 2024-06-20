@@ -7,6 +7,8 @@ const initState: contextType = {
   selectedStudent: undefined,
   studentsMainData: undefined,
   searchedData: undefined,
+  step: 1,
+  refresh: false,
 };
 
 const contextProvider = createContext(initState);
@@ -24,43 +26,80 @@ function reducer(state: contextType, action: dispatchDataType) {
         ...state,
         selectedMethod: "",
         studentsMainData: undefined,
+        selectedStudent: undefined,
       };
     case "setStudentsData":
       return {
         ...state,
-        studentsMainData: action.payload,
+        studentsMainData: action.payload ?? state?.selectedStudent,
       };
-      
+
     case "setSearchedData":
       return {
         ...state,
         searchedData: action.payload,
       };
-      
+
     case "clearSearchedData":
       return {
         ...state,
-        searchedData:undefined,
+        searchedData: undefined,
       };
 
+    case "setStep":
+      return {
+        ...state,
+        step: action?.payload,
+      };
+
+    case "setRefresh":
+      return {
+        ...state,
+        refresh: action?.payload,
+      };
+
+    case "setSelectedStudentData":
+      return {
+        ...state,
+        selectedStudent: {
+          firstName:
+            action?.payload?.firstName ?? state?.selectedStudent?.firstName,
+          lastName:
+            action?.payload?.lastName ?? state?.selectedStudent?.lastName,
+          emailId: action?.payload?.emailId ?? state?.selectedStudent?.emailId,
+          mobileNumber:
+            action?.payload?.mobileNumber ??
+            state?.selectedStudent?.mobileNumber,
+        },
+      };
 
     default:
       throw new Error("Action unkonwn");
   }
 }
-
 export default function AppContext({ children }: { children: ReactNode }) {
-  const [{ selectedMethod, selectedStudent, searchedData,studentsMainData }, dispatch] =
-    useReducer(reducer, initState);
+  const [
+    {
+      selectedMethod,
+      selectedStudent,
+      step,
+      refresh,
+      searchedData,
+      studentsMainData,
+    },
+    dispatch,
+  ] = useReducer(reducer, initState);
 
   return (
     <contextProvider.Provider
       value={{
+        refresh,
         dispatch,
         selectedMethod,
         selectedStudent,
         studentsMainData,
-        searchedData
+        searchedData,
+        step,
       }}
     >
       {children}

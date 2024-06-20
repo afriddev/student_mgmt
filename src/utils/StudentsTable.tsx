@@ -1,30 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useQuery, useQueryClient } from "react-query";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../@/components/ui/table";
-import { Input } from "../../@/components/ui/input";
-import { Button } from "../../@/components/ui/button";
-import {
-  ACTIONS,
-  ADD_STUDENT,
-  EMAIL_ID,
-  FIRST_NAME,
-  LAST_NAME,
-  MOBILE_NUMBER,
-  NO_DATA,
-} from "./constants";
-import {
-  useDeleteStudent,
-  getStudentsData,
-  useSearchStudent,
-} from "./dataAndHooks";
-import { studentType } from "./homeDataTypes";
 import {
   ChevronLeft,
   ChevronRight,
@@ -34,35 +8,52 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
+import { Button } from "../../@/components/ui/button";
+import { Input } from "../../@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../@/components/ui/table";
 import { useAppContext } from "./AppContext";
 import Spinner from "./Spinner";
+import {
+  ACTIONS,
+  ADD_STUDENT,
+  EMAIL_ID,
+  FIRST_NAME,
+  LAST_NAME,
+  MOBILE_NUMBER,
+  NO_DATA,
+} from "./constants";
+import { studentType } from "./homeDataTypes";
+import {
+  useDeleteStudent,
+  useGetStudentsData,
+  useRefresh,
+  useSearchStudent,
+} from "./hooks";
 
 function StudentsTable() {
-  const {
-    data: data,
-    isLoading,
-    isFetching,
-  } = useQuery({
-    queryKey: ["getStudents"],
-    queryFn: () => getStudentsData(),
-  });
-
   const [searchValue, setSearchValue] = useState("");
   const queryClient = useQueryClient();
-  const { dispatch, searchedData } = useAppContext();
+  const { dispatch, searchedData, refresh } = useAppContext();
   const { deleteStudent, isLoading: deletingStudent } = useDeleteStudent();
   const { searchStudent } = useSearchStudent();
   const [start, setSatrt] = useState(0);
   const [searchClicked, setSearchedClick] = useState(false);
+  const { data, getStudentsData, isLoading } = useGetStudentsData();
+  const { refreshData } = useRefresh();
 
   const rows = 5;
 
   useEffect(() => {
-    dispatch({
-      type: "setStudentsData",
-      payload: data,
-    });
-  }, [data]);
+    getStudentsData();
+  }, [refresh]);
 
   function nextClick() {
     if (data) {
@@ -88,10 +79,7 @@ function StudentsTable() {
         { emailId },
         {
           onSuccess(data) {
-            if (data === "success")
-              queryClient?.invalidateQueries({
-                queryKey: ["getStudents"],
-              });
+            if (data === "success") refreshData();
           },
         }
       );
@@ -237,7 +225,7 @@ function StudentsTable() {
           <div>{NO_DATA}</div>
         )}
       </div>
-      {(isLoading || deletingStudent || isFetching) && <Spinner />}
+      {(isLoading || deletingStudent) && <Spinner />}
     </div>
   );
 }

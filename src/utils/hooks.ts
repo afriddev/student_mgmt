@@ -1,16 +1,46 @@
 import { useMutation } from "react-query";
 import { useAppContext } from "./AppContext";
-import { createStudentType, studentType } from "./homeDataTypes";
 import { createStudentAPI, deleteStudentAPI, editStudentDetailsAPI, getStudentsAPI } from "./api";
+import { createStudentType, studentType } from "./homeDataTypes";
 
 
-export function getStudentsData() {
-  return getStudentsAPI("api/allStudents")
+
+
+export function useRefresh() {
+
+  const { dispatch, refresh } = useAppContext()
+  function refreshData() {
+    dispatch({
+      type: "setRefresh",
+      payload: !refresh
+    })
+
+  }
+  return { refreshData }
 }
 
+
+export function useGetStudentsData() {
+  const { data, mutate: getStudentsData, isLoading, isSuccess } = useMutation({
+    mutationFn: () => getStudentsAPI("api/allStudents")
+  })
+  return { isLoading, data, getStudentsData, isSuccess }
+}
+
+
 export function useAddStudent() {
+  const { dispatch } = useAppContext();
+
   const { mutate: addStudent, data, isLoading, isSuccess } = useMutation({
-    mutationFn: (data: createStudentType) => createStudentAPI("api/createStudent", data)
+    mutationFn: (data: createStudentType) => createStudentAPI("api/createStudent", data),
+    onSuccess(data) {
+      console.log(data)
+      dispatch({
+        type: "setStudentsData",
+        payload: data,
+      });
+
+    },
   })
   return { addStudent, isLoading, isSuccess, data }
 }

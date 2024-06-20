@@ -1,7 +1,7 @@
-import StudentsTable from "./StudentsTable";
-import AddAndEditForm from "./AddAndEditForm";
-import { ADD_STUDENT, EDIT_DATA } from "./constants";
+import AddAndEdit from "./AddAndEdit";
 import { useAppContext } from "./AppContext";
+import StudentsTable from "./StudentsTable";
+import { ADD_STUDENT, EDIT_DATA } from "./constants";
 
 function HomeMain() {
   const { selectedMethod, selectedStudent } = useAppContext();
@@ -13,13 +13,13 @@ function HomeMain() {
       <div>
         {selectedMethod === "ADD" && (
           <div>
-            <AddAndEditForm edit={false} title={ADD_STUDENT} />
+            <AddAndEdit edit={false} title={ADD_STUDENT} />
           </div>
         )}
 
         {selectedMethod === "EDIT" && (
           <div>
-            <AddAndEditForm
+            <AddAndEdit
               edit={true}
               title={EDIT_DATA}
               studentData={selectedStudent}
