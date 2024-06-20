@@ -21,18 +21,10 @@ export function useRefresh() {
 
 
 export function useGetStudentsData() {
-  const { data, mutate: getStudentsData, isLoading, isSuccess } = useMutation({
-    mutationFn: () => getStudentsAPI("api/allStudents")
-  })
-  return { isLoading, data, getStudentsData, isSuccess }
-}
-
-
-export function useAddStudent() {
   const { dispatch } = useAppContext();
 
-  const { mutate: addStudent, data, isLoading, isSuccess } = useMutation({
-    mutationFn: (data: createStudentType) => createStudentAPI("api/createStudent", data),
+  const { data, mutate: getStudentsData, isLoading, isSuccess } = useMutation({
+    mutationFn: () => getStudentsAPI("api/allStudents"),
     onSuccess(data) {
       console.log(data)
       dispatch({
@@ -41,6 +33,16 @@ export function useAddStudent() {
       });
 
     },
+  })
+  return { isLoading, data, getStudentsData, isSuccess }
+}
+
+
+export function useAddStudent() {
+
+  const { mutate: addStudent, data, isLoading, isSuccess } = useMutation({
+    mutationFn: (data: createStudentType) => createStudentAPI("api/createStudent", data),
+
   })
   return { addStudent, isLoading, isSuccess, data }
 }
