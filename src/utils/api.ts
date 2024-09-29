@@ -5,7 +5,7 @@ const URL = "https://studentmgmtapi.vercel.app/"
 export async function getStudentsAPI(url: string) {
     const serverResponse = await fetch(URL + url);
     const data = await serverResponse.json()
-    return data.studnets
+    return data.students
 }
 export async function createStudentAPI(url: string, studentDetails: createStudentType) {
     const serverResponse = await fetch(URL + url, {
