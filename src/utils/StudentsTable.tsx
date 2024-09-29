@@ -151,7 +151,7 @@ function StudentsTable() {
         <Button onClick={addStudent}>{ADD_STUDENT}</Button>
       </div>
       <div className="px-4 overflow-y-auto flex flex-col gap-2 overflow-x-hidden h-[85vh]">
-        {(searchClicked ? searchedData : data)?.length > 0 && (
+        {(searchClicked ? searchedData : data?.data?.students)?.length > 0 && (
           <div className="w-full gap-3 justify-end flex items-center ">
             <label className="text-xs font-semibold">{`Page ${
               start / rows + 1
@@ -170,7 +170,7 @@ function StudentsTable() {
             />
           </div>
         )}
-        {(searchClicked ? searchedData : data)?.length > 0 ? (
+        {(searchClicked ? searchedData : data?.data?.students)?.length > 0 ? (
           <Table className="border">
             <TableHeader>
               <TableRow>
