@@ -118,7 +118,7 @@ function StudentsTable() {
       },
     });
   }
-  console.log(data)
+  alert(data)
 
   return (
     <div className="max-w-[75vw] flex flex-col gap-3">
